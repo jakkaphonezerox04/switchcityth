@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch City Server Announcement</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>Switch City Server Announcement</h1>
+                    <p>ส่งประกาศเซิร์ฟเวอร์เปิดไปยัง Discord Webhook</p>
+                </div>
+                <div class="theme-toggle">
+                    <button id="themeToggle" class="theme-btn" title="เปลี่ยนธีม">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="announcement-type">
+            <h2>ประเภทประกาศ</h2>
+            <div class="announcement-buttons">
+                <button id="btnMaintenance" class="announcement-btn maintenance-btn">
+                    บำรุงรักษาเซิร์ฟเวอร์
+                </button>
+                <button id="btnOpenServer" class="announcement-btn open-btn">
+                    เซิร์ฟเวอร์เปิดให้บริการ
+                </button>
+                <button id="btnRestartServer" class="announcement-btn restart-btn">
+                    รีสตาร์ทเซิร์ฟเวอร์
+                </button>
+                <button id="btnFine" class="announcement-btn fine-btn">
+                    ค่าปรับ
+                </button>
+                <button id="btnYellowRed" class="announcement-btn yellow-red-btn">
+                    โทษใบเหลือง - แดง 
+                </button>
+                <button id="btnRedNoReset" class="announcement-btn red-no-reset-btn">
+                    โทษใบแดงไม่รีใบ
+                </button>
+                <button id="btnVipPackage" class="announcement-btn vip-package-btn">
+                    VIP PACKAGE
+                </button>
+                <button id="btnFarmPackage" class="announcement-btn farm-package-btn">
+                    FARM PACKAGE
+                </button>
+                <button id="btnToxicReport" class="announcement-btn toxic-report-btn">
+                    แจ้งToxic
+                </button>
+            </div>
+            <div class="current-selection">
+                <span id="currentAnnouncement">เลือกประเภทประกาศ</span>
+            </div>
+        </div>
+
+        <!-- ข้อมูลเซิร์ฟเวอร์ (สำหรับหัวข้อเซิร์ฟเวอร์) -->
+        <div class="server-info" id="serverInfoSection">
+            <h2>ข้อมูลเซิร์ฟเวอร์</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>IP เซิร์ฟเวอร์:</label>
+                    <input type="text" id="serverIP" value="connect 89.38.101.86:30120" placeholder="connect server.ip:port">
+                </div>
+                <div class="info-item">
+                    <label>เวลารีเซ็ตประเทศ:</label>
+                    <input type="text" id="resetTimes" value="12:00 | 18:00 | 00:00" placeholder="12:00 | 18:00 | 00:00">
+                </div>
+                <div class="info-item" id="luckyIdSection">
+                    <div class="lucky-id-header">
+                        <label>Lucky ID:</label>
+                        <button type="button" class="toggle-btn" id="luckyIdToggle" onclick="toggleLuckyId()">
+                            <span id="luckyIdToggleText">เปิด</span>
+                        </button>
+                    </div>
+                    <div class="lucky-id-container" id="luckyIdContainer">
+                        <input type="text" id="luckyIds" value="1 | 11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99" placeholder="1 | 11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99">
+                        <div class="lucky-id-presets">
+                            <button type="button" class="preset-btn" onclick="setLuckyId('1 | 11 | 22 | 33 | 44 | 55 | 66 | 77 | 88 | 99')">เริ่มต้น</button>
+                            <button type="button" class="preset-btn" onclick="setLuckyId('1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10')">1-10</button>
+                            <button type="button" class="preset-btn" onclick="setLuckyId('10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100')">10-100</button>
+                            <button type="button" class="preset-btn" onclick="setLuckyId('5 | 15 | 25 | 35 | 45 | 55 | 65 | 75 | 85 | 95')">5-95</button>
+                            <button type="button" class="preset-btn random-btn" onclick="generateRandomLuckyId()">สุ่ม</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <label>Role ID (สำหรับ mention):</label>
+                    <input type="text" id="roleId" value="1386691682623291422" placeholder="Role ID">
+                </div>
+            </div>
+        </div>
+
+        <!-- ข้อมูลค่าปรับ -->
+        <div class="punishment-info" id="fineInfoSection" style="display: none;">
+            <h2>ข้อมูลค่าปรับ</h2>
+            <div class="info-description">
+                <p>กรอกข้อมูลผู้เล่นและรายละเอียดค่าปรับตามช่องด้านล่าง</p>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>ชื่อ:</label>
+                    <div class="field-description">ชื่อในเกมของผู้เล่น</div>
+                    <input type="text" id="playerName" placeholder="ชื่อผู้เล่น">
+                </div>
+                <div class="info-item">
+                    <label>Discord:</label>
+                    <div class="field-description">ชื่อผู้ใช้ Discord (เช่น @username)</div>
+                    <input type="text" id="discordTag" placeholder="@username">
+                </div>
+                <div class="info-item">
+                    <label>Discord ID:</label>
+                    <div class="field-description">ID ตัวเลขของ Discord (เช่น 123456789012345678)</div>
+                    <input type="text" id="discordId" placeholder="Discord ID">
+                </div>
+                <div class="info-item">
+                    <label>Steam Hex:</label>
+                    <div class="field-description">Steam Hex ID ของผู้เล่น</div>
+                    <input type="text" id="steamHex" placeholder="Steam Hex">
+                </div>
+                <div class="info-item">
+                    <label>โทษความผิด:</label>
+                    <div class="field-description">รายละเอียดความผิดที่ทำ</div>
+                    <input type="text" id="offense" placeholder="รายละเอียดความผิด">
+                </div>
+                <div class="info-item">
+                    <label>ค่าปรับ:</label>
+                    <div class="field-description">จำนวนเงินค่าปรับ (เช่น 50,000 บาท)</div>
+                    <input type="text" id="fineAmount" placeholder="จำนวนเงินค่าปรับ">
+                </div>
+                <div class="info-item">
+                    <label>กำหนดจ่ายค่าปรับวันที่:</label>
+                    <div class="field-description">วันที่กำหนดจ่าย (เช่น 25/12/2024)</div>
+                    <input type="text" id="fineDate" placeholder="00/00/0000">
+                </div>
+                <div class="info-item">
+                    <label>กำหนดจ่ายค่าปรับเวลา:</label>
+                    <div class="field-description">เวลาที่กำหนดจ่าย (เช่น 18.00 น.)</div>
+                    <input type="text" id="fineTime" placeholder="00.00 น.">
+                </div>
+                <div class="info-item">
+                    <label>Role ID (สำหรับ mention):</label>
+                    <div class="field-description">ID ของ Role ที่ต้องการ mention</div>
+                    <input type="text" id="roleIdFine" value="1386691682623291422" placeholder="Role ID">
+                </div>
+            </div>
+        </div>
+
+        <!-- ข้อมูลโทษใบเหลือง - แดง -->
+        <div class="punishment-info" id="yellowRedInfoSection" style="display: none;">
+            <h2>ข้อมูลโทษใบเหลือง - แดง</h2>
+            <div class="info-description">
+                <p>กรอกข้อมูลผู้เล่นและรายละเอียดโทษใบเหลืองหรือใบแดง</p>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>ชื่อ:</label>
+                    <div class="field-description">ชื่อในเกมของผู้เล่น</div>
+                    <input type="text" id="playerNameYellowRed" placeholder="ชื่อผู้เล่น">
+                </div>
+                <div class="info-item">
+                    <label>Discord:</label>
+                    <div class="field-description">ชื่อผู้ใช้ Discord (เช่น @username)</div>
+                    <input type="text" id="discordTagYellowRed" placeholder="@username">
+                </div>
+                <div class="info-item">
+                    <label>Discord ID:</label>
+                    <div class="field-description">ID ตัวเลขของ Discord (เช่น 123456789012345678)</div>
+                    <input type="text" id="discordIdYellowRed" placeholder="Discord ID">
+                </div>
+                <div class="info-item">
+                    <label>Steam Hex:</label>
+                    <div class="field-description">Steam Hex ID ของผู้เล่น</div>
+                    <input type="text" id="steamHexYellowRed" placeholder="Steam Hex">
+                </div>
+                <div class="info-item">
+                    <label>โทษความผิด:</label>
+                    <div class="field-description">รายละเอียดความผิดที่ทำ</div>
+                    <input type="text" id="offenseYellowRed" placeholder="รายละเอียดความผิด">
+                </div>
+                <div class="info-item">
+                    <label>โทษใบ:</label>
+                    <div class="field-description">ประเภทโทษ (เช่น ใบเหลือง หรือ ใบแดง)</div>
+                    <input type="text" id="cardType" placeholder="ใบเหลือง หรือ ใบแดง">
+                </div>
+                <div class="info-item">
+                    <label>Role ID (สำหรับ mention):</label>
+                    <div class="field-description">ID ของ Role ที่ต้องการ mention</div>
+                    <input type="text" id="roleIdYellowRed" value="1386691682623291422" placeholder="Role ID">
+                </div>
+            </div>
+        </div>
+
+        <!-- ข้อมูลโทษใบแดงไม่รีใบ -->
+        <div class="punishment-info" id="redNoResetInfoSection" style="display: none;">
+            <h2>ข้อมูลโทษใบแดงไม่รีใบ</h2>
+            <div class="info-description">
+                <p>กรอกข้อมูลผู้เล่นและรายละเอียดโทษใบแดงที่ไม่สามารถรีเซ็ตได้</p>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>ชื่อ:</label>
+                    <div class="field-description">ชื่อในเกมของผู้เล่น</div>
+                    <input type="text" id="playerNameRedNoReset" placeholder="ชื่อผู้เล่น">
+                </div>
+                <div class="info-item">
+                    <label>Discord:</label>
+                    <div class="field-description">ชื่อผู้ใช้ Discord (เช่น @username)</div>
+                    <input type="text" id="discordTagRedNoReset" placeholder="@username">
+                </div>
+                <div class="info-item">
+                    <label>Discord ID:</label>
+                    <div class="field-description">ID ตัวเลขของ Discord (เช่น 123456789012345678)</div>
+                    <input type="text" id="discordIdRedNoReset" placeholder="Discord ID">
+                </div>
+                <div class="info-item">
+                    <label>Steam Hex:</label>
+                    <div class="field-description">Steam Hex ID ของผู้เล่น</div>
+                    <input type="text" id="steamHexRedNoReset" placeholder="Steam Hex">
+                </div>
+                <div class="info-item">
+                    <label>โทษความผิด:</label>
+                    <div class="field-description">รายละเอียดความผิดที่ทำ</div>
+                    <input type="text" id="offenseRedNoReset" placeholder="รายละเอียดความผิด">
+                </div>
+                <div class="info-item">
+                    <label>Role ID (สำหรับ mention):</label>
+                    <div class="field-description">ID ของ Role ที่ต้องการ mention</div>
+                    <input type="text" id="roleIdRedNoReset" value="1386691682623291422" placeholder="Role ID">
+                </div>
+            </div>
+        </div>
+
+        <!-- ข้อมูลแจ้งToxic -->
+        <div class="toxic-report-info" id="toxicReportInfoSection" style="display: none;">
+            <h2>ข้อมูลแจ้งToxic</h2>
+            <div class="info-description">
+                <p>กรอกข้อมูลผู้แจ้งและผู้ถูกแจ้งพร้อมหลักฐาน</p>
+            </div>
+            
+            <!-- ข้อมูลผู้แจ้ง -->
+            <div class="toxic-section">
+                <h3>ข้อมูลผู้แจ้ง</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>ชื่อผู้แจ้ง:</label>
+                        <div class="field-description">ชื่อในเกมของผู้แจ้ง</div>
+                        <input type="text" id="reporterName" placeholder="ชื่อผู้แจ้ง">
+                    </div>
+                    <div class="info-item">
+                        <label>UID Discord ผู้แจ้ง:</label>
+                        <div class="field-description">Discord ID ของผู้แจ้ง</div>
+                        <input type="text" id="reporterDiscordId" placeholder="Discord ID">
+                    </div>
+                    <div class="info-item">
+                        <label>Steam Hex ผู้แจ้ง:</label>
+                        <div class="field-description">Steam Hex ID ของผู้แจ้ง</div>
+                        <input type="text" id="reporterSteamHex" placeholder="Steam Hex">
+                    </div>
+                    <div class="info-item">
+                        <label>หลักฐานผู้แจ้ง:</label>
+                        <div class="field-description">ลิงก์หลักฐานหรือรายละเอียดการแจ้ง</div>
+                        <input type="text" id="reporterEvidence" placeholder="หลักฐานการแจ้ง">
+                    </div>
+                    <div class="info-item">
+                        <label>หมายเหตุ:</label>
+                        <div class="field-description">หมายเหตุเพิ่มเติมจากผู้แจ้ง</div>
+                        <input type="text" id="reporterNote" placeholder="หมายเหตุ">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ข้อมูลผู้ถูกแจ้ง -->
+            <div class="toxic-section">
+                <h3>ข้อมูลผู้ถูกแจ้ง</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>ชื่อผู้ถูกแจ้ง:</label>
+                        <div class="field-description">ชื่อในเกมของผู้ถูกแจ้ง</div>
+                        <input type="text" id="reportedName" placeholder="ชื่อผู้ถูกแจ้ง">
+                    </div>
+                    <div class="info-item">
+                        <label>UID Discord ผู้ถูกแจ้ง:</label>
+                        <div class="field-description">Discord ID ของผู้ถูกแจ้ง</div>
+                        <input type="text" id="reportedDiscordId" placeholder="Discord ID">
+                    </div>
+                    <div class="info-item">
+                        <label>Steam Hex ผู้ถูกแจ้ง:</label>
+                        <div class="field-description">Steam Hex ID ของผู้ถูกแจ้ง</div>
+                        <input type="text" id="reportedSteamHex" placeholder="Steam Hex">
+                    </div>
+                    <div class="info-item">
+                        <label>หลักฐานแย้ง:</label>
+                        <div class="field-description">หลักฐานหรือคำแย้งจากผู้ถูกแจ้ง</div>
+                        <input type="text" id="reportedEvidence" placeholder="หลักฐานแย้ง">
+                    </div>
+                    <div class="info-item">
+                        <label>หมายเหตุ:</label>
+                        <div class="field-description">หมายเหตุเพิ่มเติมเกี่ยวกับผู้ถูกแจ้ง</div>
+                        <input type="text" id="reportedNote" placeholder="หมายเหตุ">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="webhook-section">
+            <h2>Webhook URLs</h2>
+            <div class="webhook-controls">
+                <select id="webhookSelect" class="webhook-dropdown">
+                    <option value="">เลือก Webhook</option>
+                    <option value="https://discord.com/api/webhooks/1411755878809600071/2zZboZ1NNt3iuhMV1ltWBJNlS1duNyBx7bkxEF1Gxt_pNiLejeRxucGBbYEv0QY2sA5t">ห้องstatus server</option>
+                    <option value="https://discord.com/api/webhooks/1411756165314121778/7-fTOjZzeAm5y0qKXY8TKsxH4sTnqPF-e33tfMDWnQsfyZeMkYExS1qe8jwHaQP7OoFt">ห้องพูดคุย</option>
+                    <option value="https://discord.com/api/webhooks/1413471186754469978/qgPjUuA634ycGEiCssPpXDxq00ri89k9DpqL9I_mkm_OrFgttx5lAU9ozOOPZ_XQlidg">ห้องใบเหลือง - แดง</option>
+                    <option value="https://discord.com/api/webhooks/1413471284871954503/wsPO6pH2RvUKBBIpX6eJNHWK_-OhJAvZsB0plZvM74oag31Oa84Tye1yDWmXqZ2E0D_M">ห้องใบแดงถาวร - ไม่รีใบ</option>
+                    <option value="https://discord.com/api/webhooks/1413471036963422319/rNaO6NTgl4Kx68HKl9gMvvzVKEaNgRqLBAXQqSDA3571R9gTIrVZL77FhX7onH5JTqnr">ห้องค่าปรับ</option>
+                </select>
+                <button id="addWebhook" class="btn btn-secondary">เพิ่ม Webhook</button>
+            </div>
+            <div id="webhookList">
+                <!-- Webhook URLs จะถูกเพิ่มที่นี่โดย JavaScript -->
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>ตัวอย่างข้อความ</h2>
+            <div class="preview-container">
+                <div class="discord-message">
+                    <div class="message-header">
+                        <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Bot Avatar" class="avatar">
+                        <div class="message-info">
+                            <span class="username">Switch City BOT</span>
+                            <span class="timestamp">วันนี้ เวลา 22:10</span>
+                        </div>
+                    </div>
+                    <div class="message-content" id="previewContent">
+                        <span class="role-mention">@Role</span>
+                    </div>
+                    <div class="embeds" id="previewEmbeds">
+                        <!-- ตัวอย่างจะถูกอัปเดตโดย JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-section">
+            <button id="sendAnnouncement" class="btn btn-primary">
+                ส่งประกาศ
+            </button>
+            <button id="testWebhooks" class="btn btn-secondary">
+                ทดสอบ Webhook
+            </button>
+        </div>
+
+        <div id="result" class="result-section"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
