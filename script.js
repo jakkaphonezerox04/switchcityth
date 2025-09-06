@@ -520,6 +520,7 @@ function generateRandomLuckyId() {
 // เปิด/ปิด Lucky ID
 let luckyIdEnabled = true;
 
+// เปิด/ปิด Lucky ID
 function toggleLuckyId() {
     luckyIdEnabled = !luckyIdEnabled;
     const container = document.getElementById('luckyIdContainer');
@@ -539,6 +540,11 @@ function toggleLuckyId() {
     updatePreview();
     saveSettings();
 }
+
+// ทำให้ฟังก์ชันเป็น global
+window.toggleLuckyId = toggleLuckyId;
+window.setLuckyId = setLuckyId;
+window.generateRandomLuckyId = generateRandomLuckyId;
 
 // โหลด webhook URLs เริ่มต้นจากข้อมูล backups.json
 function loadDefaultWebhooks() {
@@ -1203,6 +1209,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btnVipPackage').addEventListener('click', () => changeAnnouncementType('𝗩𝗜𝗣 𝗣𝗔𝗖𝗞𝗔𝗚𝗘'));
     document.getElementById('btnFarmPackage').addEventListener('click', () => changeAnnouncementType('𝗙𝗔𝗥𝗠 𝗣𝗔𝗖𝗞𝗔𝗚𝗘'));
     document.getElementById('btnToxicReport').addEventListener('click', () => changeAnnouncementType('แจ้งToxic'));
+    
+    // Event listener สำหรับปุ่ม Lucky ID Toggle
+    document.getElementById('luckyIdToggle').addEventListener('click', toggleLuckyId);
     
     // Event listeners สำหรับ input fields
     document.getElementById('serverIP').addEventListener('input', function() {
